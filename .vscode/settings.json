@@ -16,5 +16,6 @@
             "command": "extension.execute",
             "priority": 4
         }
-    ]
+    ],
+    "python.pythonPath": "E:\\Users\\Lovely_him\\Anaconda3\\python.exe"
 }
