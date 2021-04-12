@@ -4,6 +4,8 @@
 import sys
 import serial
 import serial.tools.list_ports
+# 注意，不用安装 serial ，不然程序会失效，
+# 虽然导入的模块名字是 serial。但是要安装的是 pyserial。
 
 plist = list(serial.tools.list_ports.comports())
 
