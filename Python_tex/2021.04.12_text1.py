@@ -7,6 +7,7 @@ import serial.tools.list_ports
 # 注意，不用安装 serial ，不然程序会失效，
 # 虽然导入的模块名字是 serial。但是要安装的是 pyserial。
 
+# 读取电脑中可用的串口，返回的是对象，用转换列表的方式，可以返回装有数个对象的列表
 plist = list(serial.tools.list_ports.comports())
 
 
@@ -16,16 +17,19 @@ if len(plist) == 0:
     sys.exit()  #退出程序
 else:
     print("【him】：有以下可用串口；")
-    for plist_n in range(len(plist)):
-        print(plist[plist_n],end = f" - {plist_n}\n")
+    for plist_n in range(len(plist)):   
+        print(plist[plist_n],end = f" - {plist_n}\n") 
+        # 这个列表里的所有对象 都可以使用转换字符串的方式，返回串口名字。
+        # 如果是查看类型确实是对象，该对象应该存在：尝试对对象进行字符串操作是返回一段字符串。
+        # 百度一查类的隐藏方法，就有了。果然如此。python训练营果然还是有作用的。
 
 print("——————————————————————————————————————")
 print("【him】：请输入你需要连接的串口:",end = '')
 
 while 1:
     try:
-        portx = int(input())
-        portx = list(plist[portx])[0]
+        portx = int(input())            #读取输入字符，把输入字符转换为整形
+        portx = list(plist[portx])[0]   #说明： 
     except:
         print("【him】：警告！你输入内容有误，请重新输入；",end = '')
     else:
