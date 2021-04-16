@@ -31,6 +31,7 @@ except:
     # 使用终端命令安装所有模块，已安装的不会再安装
     for module in use_module_list:
         os.system(f"pip install {module}")
+    sys.exit()  # 退出程序，要重新打开程序，防止没安装成功
 
 
 class Canon_Port():
