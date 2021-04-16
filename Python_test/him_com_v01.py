@@ -7,10 +7,13 @@ import os       #如果这几个都没安装就没救了，不会吧，不会吧
 import sys
 import time
 
+
 """
 简易上位机【第一版】：接受串口数据（类型为字符串），转换为十六进制的uint32解压数据还原图片
 还学会了使用以下命令可以打包成一个可执行文件（不要加F就不是一个单独的文件）
 pyinstaller -F  ****.py
+还没开始用就已经连续发现几个bug，基本都是数据校验的问题。看来我要重新想想到底要规定帧头帧尾了。
+总结，每一集数据都要有帧头帧尾，然后图像发送开始和结束也有个标志
 """
 
 try:
@@ -40,13 +43,14 @@ class Canon_Port():
     """
     功能：创建串口端口对象，可自主选择端口号
     参数：（目前只支持修改波特率和等待超时时间）
-    使用：创建实例对象后，调用方法call即可返回一行端口信息
+    使用：创建实例对象后，调用方法call即可返回指定字节数的端口信息
     """
-    def __init__(self, baudrate=115200, timeout=2):
-        # 获取波特率、端口号、等待超时时间(s)
+    def __init__(self,read_size = 8, baudrate=115200, timeout=2):
+        # 获取读取字节数目、波特率、端口号、等待超时时间(s)
         self.port = self.Get_Port()
         self.baudrate = baudrate
         self.timeout = timeout
+        self.read_size = read_size
         try:
             # 创建端口对象实例
             self.com = serial.Serial(
@@ -87,16 +91,26 @@ class Canon_Port():
         # 成功选择了端口，并返回
         return portx
 
-    # 获取串口的一行信息（以回车结束）
+    # 获取串口信息
     def __call__(self):
+        """
+        唯一参数：是否一直等待帧头的出现
+        """
         try:
-            # 获取串口信号，如果超时则返回空
-            data = self.com.readline()
-            # 返回字符串的标准化
-            # data = data.strip()
-            # 转换为标准字符
-            # data = str(data,'utf-8')
-            # 为了适应情况，这里不对数据做处理
+            while 1:
+                # 获取串口信号，如果超时则返回空
+                data = ord(self.com.read(1))
+
+                while data != 0xa5:
+                    data = ord(self.com.read(1))
+                
+                data =  list(self.com.read(7))
+                
+                if data[-1] == 0x5a:
+                    data.pop(-1)
+                    break
+
+            # 检查帧头帧尾正不正确
         except:
             # 读取转换失败就返回空
             data = ''
@@ -132,33 +146,43 @@ class Com_Data():
             "刚开始调试时就不用加 try 了，找半天不知道哪里错了"
             try:
                 "读取数据"
-                data = self.com()  # 读取串口数据
-                data = data.strip()  # 字符串标准化
-                data = str(data, 'utf-8')  # 字符串格式转换
-                data = data.split(':')  # 切分字符串
+                data = self.com()       # 读取串口数据
+                if len(data) != 6:      # 我已经指定是6了，还不是的话就是有问题了
+                    print(f"【him】：{data} - 数据长度有误，丢弃数据。")
+                    continue
             except:
                 # 打印数据
-                print(f"【him】：这一次的读取失败: {data}，开始重新读取")
+                print(f"【him】： {data} - 这一次的读取失败，开始重新读取。")
 
-            if len(data) is not 2:  # 数据格式不符合要求，退出
+            "检测帧头"
+            if keys == 0 :              #等待帧头
+                if (data[0] == 0xFF) and (data[1] == 0xFF) and (data[2] == 0xFF) and\
+                    (data[3] == 0xFF) and (data[4] == 0xFF) and (data[5] == 0xFF):
+                    keys = 1            #全符合帧头要求，开始接收数据
+                    continue
+                else:
+                    continue
+            "检测帧尾"
+            if keys == 1:               #等待帧头
+                if (data[0] == 0xEE) and (data[1] == 0xEE) and (data[2] == 0xEE) and\
+                    (data[3] == 0xEE) and (data[4] == 0xEE) and (data[5] == 0xEE):
+                    break               #全符合帧尾要求，完成接收，退出
+                if data[0] >= 128:
+                    print(f"【him】： {data} - 列数号不符合要求。")
+                    continue            #不符合要求，又不是帧尾，直接退出
+
+            "检测校验"
+            add = data[1]&data[2]&data[3]&data[4]
+            if data[5] != add:
+                print(f"【him】：{data} - 校验位有误，丢弃数据。")
                 continue
-
-            "检测帧头帧尾 （三个判断顺序不能乱）"
-            if (keys is 0) and (data[0][0] is 'A'):
-                keys = 1  # 检测帧头
-                continue
-            elif (keys is 0):
-                continue  # 没检测到帧头就看到帧尾或其他东西
-            elif (keys is 1) and (data[0][0] is 'Z'):
-                break  # 检测帧尾
-
+            
             "提取数据"
-            x = int(data[0])  # 提取列号
-            y_str = data[1]  # 提取整列内容
-            y_hex = int(y_str, 16)  # wc,原来那么简单就可以转16进制的字符串了
+            x = data[0]  # 提取列号
+            y = data[1] | (data[2]<<8) | (data[3]<<16) |(data[4]<<24)
 
             "保存数据"
-            self.bmp[x] = y_hex
+            self.bmp[x] = y
             x_num += 1  # 成功接受，保存数据
 
         "读取完毕，开始转换图片"

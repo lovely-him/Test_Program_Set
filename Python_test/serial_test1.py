@@ -87,17 +87,20 @@ class Canon_Port():
     
     # 获取串口的一行信息（以回车结束）
     def __call__(self):
-        try:
+        # 测试就不用加什么检测错误啦
+        while 1:
             # 获取串口信号，如果超时则返回空
-            data = self.com.readline()
-            # 返回字符串的标准化
-            # data = data.strip()
-            # 转换为标准字符
-            # data = str(data,'utf-8')
-            # 为了适应情况，这里不对数据做处理
-        except:
-            # 读取转换失败就返回空
-            data = ''
+            data = ord(self.com.read(1))
+
+            while data != 0xa5:
+                data = ord(self.com.read(1))
+            
+            data =  list(self.com.read(7))
+            
+            
+            if data[-1] == 0x5a:
+                data.pop(-1)
+                break
 
         return data
 
@@ -105,18 +108,13 @@ if __name__ == '__main__':
     # 创建实例对象
     com = Canon_Port()
     # 打印内容
-    try:
-        while 1:
-            if com():
-                try:
-                    data = com()
-                    data = data.strip()
-                    data = str(data,'utf-8')
-                except:
-                    data = 0
-                print(data)
+    while 1:
+        # try:  #调试时要关闭，这样才好找错误
 
-    except:
-        print("——————————————————————————————————————")
-        print("【him】：程序结束；")
+        data = com()
+        
+        print(data)
+
+        break
+
 
