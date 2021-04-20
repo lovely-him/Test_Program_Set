@@ -14,7 +14,7 @@ import serial_test3 as him3
 # 创建串口对象
 com = him1.Canon_Port()
 # 创建转换数据对象
-get_data = him3.img_data(com,print_on = 1)
+get_data = him3.Open_win(com,print_on = 1)
 
 #建立app
 app = pg.mkQApp()
