@@ -35,7 +35,7 @@ except:
     sys.exit()                          # 退出程序，要重新打开程序，防止没安装成功
 
 
-from serial_test4 import Canon_com
+from ../pyserial/serial_test4 import Canon_com
 # from serial_test4 import math_all     # 也可以外部调用
 def math_all(img_data, bmp_data):
     """图像处理函数，在播放图片或接收图片时嵌套调用，用来显示实时处理结果

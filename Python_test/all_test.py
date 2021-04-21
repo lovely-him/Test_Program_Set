@@ -1,32 +1,47 @@
-from pathlib import Path
-path ="./Python_test/out_jpg/him_data.txt"                               # 文本保存路径
-my_file = Path(path)
-if my_file.is_file():
-    print("文件存在")
-    with open(path, "rt") as in_file:
-        text = in_file.readlines()                                      # 返回一个列表，遗憾
 
-        text.pop(0)         # 连续弹出3次，把开头的说明文件去掉
-        text.pop(0)
-        text.pop(0)
 
-        read_text = []
 
-        for i in range(len(text)):
-            line = text[i]
-            line = line.strip()            # 标准化
-            data = line.split('|')
-            if len(data) != 3:
-                print("有问题")
-                break
+import numpy as np
+import matplotlib.pyplot as plt
+import imageio
 
-            file_name = data[0].strip()
-            show_time = int(data[1].strip())
-            img_data = data[2].strip().split(' ')
-            for j in range(len(img_data)):
-                img_data[j] = int(img_data[j],16)
+path = "./Python_test/out_jpg/6.jpg"
+com_img = imageio.imread(path)                                      # 读取图片
+com_img = list(com_img)
 
-            read_text.append([file_name,show_time,img_data])
-    # print(read_text)
-else:
-    print("文件不存在")
+path = "./Python_test/out_jpg/him_data.txt"
+with open(path,'rt') as f:
+    text = f.read()
+    text = text.split('\n')
+    text = text[5]
+    text = text.split('|')
+    text = text[2]
+    text = text.split(' ')
+    text.pop(0)
+    text.pop(-1)
+    
+    
+    img = np.zeros((32,128), dtype = np.uint8) # 重置图像数组
+    for x in range(128):            # 解压数据
+        data = int(text[x],16)
+        if data != 0:               # 列不为空
+            for y in range(32):     
+                gray = (data>>y) & 0x01
+                if gray == 1:       # 行不为空
+                    img[31-y][x] = 255     # 计算机中的图片原点为左上角
+
+
+img = list(img)
+
+    # 显示图片
+# plt.imshow(com_img)
+# plt.show()
+
+# img = np.zeros((32,128), dtype = np.uint8) # 重置图像数组
+
+num = [i for i in range(128)]
+# print(num)
+
+img.append(num)
+
+np.savetxt("./Python_test/out_jpg/img.txt", img, fmt="%3.0f")
