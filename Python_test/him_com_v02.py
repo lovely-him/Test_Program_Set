@@ -823,13 +823,13 @@ class Win_UI():
         """传入图片数据，把数据保存到相应的目录下，
         同时生成把信息记录到一个文本中，图片序号、读取时间、解包前的数据"""
         self.save_img_num += 1
-        path = self.filePath + str(f'{self.save_img_num}.jpg')          # 生成保存图片文件的路径
+        path = self.filePath + str(f'{self.save_img_num}.png')          # 生成保存图片文件的路径
         imageio.imsave(path, img)                                       # 调用函数，保存图片
 
         self.pushButton_10_num_connect(self.save_img_num)               # 改变按钮文本，显示目前已保存图片数目
         self.print(f"【him】：已保存图片 - {path}",0)                    # 将信息打印到窗口查看
 
-        num_data = str(f"{self.save_img_num:>4}.jpg")                   # 记录文件名，使用对其格式
+        num_data = str(f"{self.save_img_num:>4}.png")                   # 记录文件名，使用对其格式png 和 jpg，有什么不同？
 
         time_data = str(f"{int(time*1000):>4}")                         # 记录播放的持续时间，单位是ms
 
@@ -877,7 +877,10 @@ class Win_UI():
                 for j in range(len(img_data)):
                     img_data[j] = int(img_data[j],16)
 
-                self.read_text.append([file_name, show_time, img_data])     # 把数据全都保存在一个文件中
+                if len(img_data) != 128:
+                    print("【him】：为什么长度不是128？？改了了什么东西吗？")
+
+                self.read_text.append((file_name, show_time, img_data))     # 把数据全都保存在一个文件中
 
             examine_num = int(self.read_text[-1][0].split('.')[0])          # 读取最后一行记录的数目
             if examine_num != len(self.read_text):                          # 最后再检查一下文件内容符不符合。如果数目不对就是错的
@@ -913,7 +916,7 @@ class Win_UI():
         com_img = imageio.imread(path)                                      # 读取图片
         com_bmp = self.read_text[self.read_img_num][2]                      # 读取压缩图片的数组
         
-        com_img = math_all(com_img, com_bmp)            # 图片处理算法
+        com_img = math_all(com_img, com_bmp)            # 图片处理算法， 是要直接显示图片，还是还原压缩数据，都在这里改动
 
         show_img = np.zeros((128,32), dtype = np.uint8) 
         for x in range(128):                                                # 反转图片

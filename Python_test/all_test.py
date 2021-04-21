@@ -28,7 +28,7 @@ with open(path,'rt') as f:
             for y in range(32):     
                 gray = (data>>y) & 0x01
                 if gray == 1:       # 行不为空
-                    img[31-y][x] = 255     # 计算机中的图片原点为左上角
+                    img[31-y][x] = 1     # 计算机中的图片原点为左上角
 
 
 img = list(img)
@@ -44,4 +44,4 @@ num = [i for i in range(128)]
 
 img.append(num)
 
-np.savetxt("./Python_test/out_jpg/img.txt", img, fmt="%3.0f")
+np.savetxt("./Python_test/out_jpg/img.txt", img, fmt="%2.0f")

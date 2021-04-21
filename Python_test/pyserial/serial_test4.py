@@ -179,10 +179,10 @@ if __name__ == '__main__':
     np.savetxt("./Python_test/out_jpg/img.txt", data[1], fmt="%0.0f", newline=' | ')
     # 保存图片
     import imageio
-    imageio.imsave('./Python_test/out_jpg/img.jpg', data[0])
+    imageio.imsave('./Python_test/out_jpg/img.png', data[0])
     # 打开图片
     from PIL import Image
-    img = Image.open('./Python_test/out_jpg/img.jpg')
+    img = Image.open('./Python_test/out_jpg/img.png')
     img = np.array(img)
     # 显示图片
     import matplotlib.pyplot as plt
