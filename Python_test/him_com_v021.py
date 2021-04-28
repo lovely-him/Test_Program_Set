@@ -8,7 +8,7 @@
 
 # 文件目录前缀（指定 UI 文件 和 图标文件） 和 保存图片的默认路径
 file_catalog = "./Python_test/ui/"
-file_catalog_1 = "E:/Program/Documents/GitHub/Program_test/Python_test/out_img/全向-30cm-0"#./Python_test/out_img/
+file_catalog_1 = "E:/Program/Documents/GitHub/Program_test/Python_test/out_img/全向-30cm-0/"#./Python_test/out_img/
 
 # 算法文件 也可以外部调用 这个也是一个路径
 from him_math.him_math_all import math_all     
@@ -104,6 +104,8 @@ class Canon_com():
                 if ch:
                     data = ord(ch)          # 有内容才转换
                     error_num += 1          # 如果是有内容，但是是错的，就加一次
+                    if data != 0xA5:
+                        print("【him】：判断列数据的帧头有错！！！",data)
                 else:
                     error_num += 20         # 如果是超时就认为是断线了，直接加20
 
@@ -112,11 +114,16 @@ class Canon_com():
                     return 'error'
 
             data = list(self.read(1+4+1+1))
+            if len(data) != (1+4+1+1):      # 在接收后续内容的时候超时了！！！这样会接收到一般直接卡主……
+                print("【him】：判断列数据的长度有错！！！")
+                continue
 
             if data[-1] != 0x5A:            # 判断帧尾
+                print("【him】：判断列数据的帧尾有错！！！")
                 continue
 
             if data[-2] != (data[0]&data[1]&data[2]&data[3]&data[4]):
+                print("【him】：判断列数据的校验有错！！！")
                 continue                    # 判断校验
 
             x_num = data.pop(0)             # 弹出列数号
@@ -147,7 +154,6 @@ class Canon_com():
             
             if data[0] == 0xBB:         # 符合帧头，退出这次循环
                 break
-        
         error_num = 0                   # 重置，累加在死循环中的错误情况
         while 1:
             data = self.Read_img_y()
@@ -160,6 +166,9 @@ class Canon_com():
                 continue                # while 的判断条件用不到，如果是错误内容直接跳过这次循环
 
             if data[0] != 0xDD:         # 等待帧尾
+                if data[0] >= 128:      # 收到的东西有误，直接等待下一个帧尾，虽然图像错位，但是好过卡主
+                    print("【him】场帧尾接收失败，收到的值大于128", data[0])
+                    continue        
                 self.bmp[data[0]] = data[1]
             else:
                 break
@@ -180,7 +189,7 @@ class Canon_com():
                         self.img[y][x][0] = 255             # 计算机中的图片原点为左上角
                         self.img[y][x][1] = 255             # 扩展为三维的图像
                         self.img[y][x][2] = 255             
-
+                        
         self.read_img_time -= time.time()   # 记录时间
         self.read_img_time = -self.read_img_time
         return (self.img, self.bmp)         # 返回图片
@@ -188,7 +197,7 @@ class Canon_com():
     def get_log(self, flag=1):
         "返回上一次接收图片的时间、列数、和有效字节数、无效字节数"
         correct_data = (2+self.read_y_num) * (1+1+4+1+1)
-        error_data = self.read_u8_num - correct_data
+        error_data = self.read_u8_num - correct_data        # 计算错误数据，如果我把空数据也发回来，那计算方法就不一样了。所以会显示一堆错误数据……找了好久的问题
         fps = 1/self.read_img_time if self.read_img_time else 0
         string = f"【him】：耗时→{self.read_img_time:1.4f} s；帧率→{fps:8.2f}；"
         string += f"列数→{self.read_y_num:3}；正确数据→：{correct_data:5}；错误数据→{error_data:5}；"
@@ -853,14 +862,14 @@ class Win_UI():
             self.print(log[-1], 0)                          # 日志信息中的最后一个是全部信息的总和
 
             if self.ui.pushButton_10.text() != "保存图片":
-                self.save_img(com_img, com_bmp, log[0])     # 保存图片文件
+                self.save_img(com_img, com_bmp, log[0])     # 保存图片文件（保存的和显示的是不一样的）
 
     "串口图片保存 部分"
     def save_img(self, img, bmp, time):
         """传入图片数据，把数据保存到相应的目录下，
         同时生成把信息记录到一个文本中，图片序号、读取时间、解包前的数据"""
         self.save_img_num += 1
-        path = self.filePath + str(f'{self.save_img_num}.png')          # 生成保存图片文件的路径
+        path = self.filePath +'/'+ str(f'{self.save_img_num}.png')      # 生成保存图片文件的路径，加一个斜杠防止错误
         imageio.imsave(path, img)                                       # 调用函数，保存图片
 
         self.pushButton_10_num_connect(self.save_img_num)               # 改变按钮文本，显示目前已保存图片数目
