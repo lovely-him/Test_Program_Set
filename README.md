@@ -1,4 +1,4 @@
-![vs code](https://github.com/lovely-him/Test_Program_Set/tree/main/dot/vs_code.jpg)
+![vs code 原来是这样添加图片](https://github.com/lovely-him/Test_Program_Set/blob/main/dot/vs_code.jpg?raw=true)
 
 # Test_Program_Set
 Test program set
@@ -14,8 +14,13 @@ Test program set
 
 ## 文件说明
 —— Test_Program_Set                 |总项目目录
+
 ———— dot                            |其他项目文档&杂项
+
 ———— JavaScript_test                |所有JavaScript的学习测试程序
+
 ———— Matlab_test                    |所有Matlae的学习测试程序
+
 ———— Python_test                    |所有Python的学习测试程序
+
 ———— README.md                      |本介绍文件
