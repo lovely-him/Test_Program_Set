@@ -173,11 +173,12 @@ class Canon_com():
             else:
                 break
 
-        for x in range(128):                                # 将压缩图的坐标回归左上角。如果之后硬件改了，这部分就可以屏蔽掉
-            data = 0                                        # 重置
-            for y in range(32):                             # 遍历一列的每一行
-                data |= (((self.bmp[x]>>y)&0x1)<<(31-y))    # 将整列反转
-            self.bmp[x] = data                              # 覆盖这一列的数据
+        # 已经矫正，可以屏蔽掉了。
+        # for x in range(128):                                # 将压缩图的坐标回归左上角。如果之后硬件改了，这部分就可以屏蔽掉
+        #     data = 0                                        # 重置
+        #     for y in range(32):                             # 遍历一列的每一行    
+        #         data |= (((self.bmp[x]>>y)&0x1)<<(31-y))    # 将整列反转
+        #     self.bmp[x] = data                              # 覆盖这一列的数据
 
         for x in range(128):                                # 解压数据
             data = self.bmp[x]
