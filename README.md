@@ -1,7 +1,8 @@
 
-![vs code 原来是这样添加图片](https://github.com/lovely-him/Test_Program_Set/blob/main/dot/vs_code.jpg?raw=true)
+![vs code 原来是这样添加图片](./dot/vs_code.jpg)
 
 # Test_Program_Set
+
 Test program set
 测试程序集合
 

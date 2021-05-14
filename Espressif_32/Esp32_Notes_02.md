@@ -2,7 +2,7 @@
 
 > 前言，继续上一篇的内容。为了不堆积太多内容，所以切分编写。
 
-## ESP32读取陀螺仪（IIC）
+## 一、ESP32读取陀螺仪（IIC）
 
 > 官方例程：[github:esp-idf/examples/peripherals/i2c/i2c_self_test/](https://github.com/espressif/esp-idf/tree/master/examples/peripherals/i2c/i2c_self_test)，官方给的硬件iic例程，我之前用惯的都是软件iic。
 > 官方指南：[I2C 驱动程序](https://docs.espressif.com/projects/esp-idf/zh_CN/latest/esp32/api-reference/peripherals/i2c.html)，开篇第一句“*I2C 是一种串行同步半双工通信协议，总线上可以同时挂载多个主机和从机。I2C 总线由串行数据线 (SDA) 和串行时钟线 (SCL) 线构成。这些线都需要上拉电阻。*”，我使用了软件上拉。（这一篇有中文版介绍）
@@ -79,7 +79,7 @@ mpu_acc_x = 53
 
 
 
-## ESP32驱动IPS彩屏显示（SPI）
+## 二、ESP32驱动IPS彩屏显示（SPI）
 
 > 官方例程：[github:esp-idf/examples/peripherals/spi_master/lcd/](https://github.com/espressif/esp-idf/tree/master/examples/peripherals/spi_master/lcd)，官方有一个关于的lcd的例程，我只看了其中基本的收发和初始化，其他数据处理都没看，因为我自己有对应的库，只需要关心底层配置就好了。
 > 官方指南：[SPI Master Driver](https://docs.espressif.com/projects/esp-idf/zh_CN/latest/esp32/api-reference/peripherals/spi_master.html?highlight=spi_device_polling_transmit#overview-of-esp32-s-spi-peripherals)，又是全英文介绍，头大。因为我以前用也是调用api，没在意过其中的协议或是配置。只知道和iic差不多，也是拉高拉低cs，选择设备，发送发送地址、发送命令、发送数据之类的。
@@ -196,9 +196,6 @@ void lcd_data(const uint8_t data[2], int len)
 
 > - 先记载那么多，如果之后发现发现到底是问题的话再补。（2021年5月4日 22:05:21）没有发现问题，但是问题已经消失了……（2021年5月5日 09:57:14）
 
-## 电机PWM输出 - MCPWM
-
-
-
+- 2021.05.08 - 问题1： 我无意查了一下引脚定义，发现esp32-wroom-32的引脚名字中，对应有`HSPI`字符的引脚并不和例程的一样，而我使用的是例程的……也就是说我使用的并不是固定的硬件spi引脚？连硬件spi引脚也不是固定的吗？（目前已经学了`PCNT`和`MCPWM`，其引脚也都不是固定的）好了，测试完毕了，引脚都不是固定的，其中用不到的`SPI_MISO`引脚设定-1即可，背光引脚的初始化和定义屏蔽掉即可。
 
 
