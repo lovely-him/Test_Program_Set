@@ -108,7 +108,9 @@
 - 百度百科：将[交流电](https://baike.baidu.com/item/交流电)变换为直流电称为[AC/DC](https://baike.baidu.com/item/AC%2FDC)变换，这种变换的功率流向是由电源传向负载，称之为整流。经过运算放大部分后，我们已经得到了正弦波的正电压部分，单片机AD读取需要较稳定的直流电。所以需要整流滤波。
 > 推荐一篇笔记：[吃透一切整流滤波电路](https://blog.csdn.net/u010552932/article/details/80921505)，（发现挺多内容模电书上也有）。
 
-- 从波形上看，正弦波经过直流的同相放大器后得到的半波形，就有点类似半波整流的效果。不过没有放大效果，而且还因为二极管压降了一点电压……
+- 从波形上看，正弦波经过直流的同相放大器后得到的半波形，就有点类似**半波整流**的效果。不过没有放大效果，而且还因为二极管压降了一点电压……电路图和波形图如下。
 
-<img src="E:\Program\Documents\GitHub\Program_test\Circuit_test\Operational_Amplifier\20210515085622.png" alt="半波整流" style="zoom:60%;" /><img src="E:\Program\Documents\GitHub\Program_test\Circuit_test\Operational_Amplifier\20210515091400.png" alt="半波整流波形" style="zoom:40%;" />
+<img src="./20210515085622.png" alt="半波整流" style="zoom:60%;" /><img src="./20210515091400.png" alt="半波整流波形" style="zoom:40%;" />
+
+> 因为波形图是类似的，所以暂时使用上图电路代替运算放大器的输出波形。
 
