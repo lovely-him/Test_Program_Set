@@ -1,9 +1,7 @@
 
+a = 128
+b = -5
+c = ~b+1
+d = 
 
-c = 32
-k = 2
-
-y = [i for i in range(16,32)] 
-x = [(i-16)*k+c for i in y]
-
-print(y,x)
+print(a,b,c)

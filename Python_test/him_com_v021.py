@@ -195,6 +195,78 @@ class Canon_com():
         self.read_img_time = -self.read_img_time
         return (self.img, self.bmp)         # 返回图片
 
+    def Read_midcourt(self):
+        "读取中线，只包含中线和部分标志位的内容"
+        num = 0                                                     # 接收数目
+        self.BT_SET_NUM = 41                                        # 发送数目
+        rx_array = np.zeros((self.BT_SET_NUM), dtype = np.uint8)    # 接收数组
+        self.img = np.zeros((32,128,3), dtype = np.uint8)           # 重置图像数组
+        self.bmp = np.zeros(128, dtype = np.uint32)                 # 注意，这里为了避免错误用bmp先存起来
+        self.read_u8_num = 0                                        # 重置接收字节数
+        self.read_img_time = time.time()                            # 记录时间
+
+        while 1:
+            ch = self.read(1)
+            if ch:
+                rx_array[num] = ord(ch)
+            else:
+                continue
+            if num < 2 and rx_array[num] != 0xA5:               # 判断帧头
+                num = 0
+                continue
+            else:                                               # 接收数据
+                num += 1
+                if num == self.BT_SET_NUM:                      # 接收完毕
+                    
+                    rx_check = 0
+                    for i in range(2,self.BT_SET_NUM-2,1):      # 计算校验位
+                        rx_check += rx_array[i]
+                    #     print(f"{i}:{rx_array[i]};{rx_check};",end=" ")
+                    
+                    # print(rx_array[self.BT_SET_NUM-2],rx_check&0xF,rx_array[self.BT_SET_NUM-1])
+                    if rx_array[self.BT_SET_NUM-2] == (rx_check&0xF):    # 对比校验位
+                        break
+                    else:
+                        num = 0
+                        continue
+        
+        self.Status_flag = rx_array[6]                          # 取出状态标志位
+
+        for i in range(7,7+32,1):
+            i_y = i-7
+            ch = rx_array[i]
+
+            if ch & 0x80:                                       # 判断正负
+                i_x = ~ch+1
+            else:
+                i_x = ch
+
+            i_x += 64
+            if i_x>0 and i_x<126:                               # 判断范围
+                self.img[i_y][i_x][0] = 255
+                self.img[i_y][i_x][1] = 255
+                self.img[i_y][i_x][2] = 255
+                self.bmp[i_x] = 0x1<<i_y
+
+        self.read_img_time -= time.time()   # 记录时间
+        self.read_img_time = -self.read_img_time
+        return (self.img, self.bmp)         # 返回图片
+        
+    def get_log_2(self, flag=1):
+        "读取中线时专用"
+        correct_data = self.BT_SET_NUM
+        error_data = self.read_u8_num - correct_data 
+        fps = 1/self.read_img_time if self.read_img_time else 0
+        string = f"【him】：耗时→{self.read_img_time:1.4f} s；帧率→{fps:8.2f}；"
+        string += f"标志位→{self.Status_flag:2}；正确数据→：{correct_data:5}；错误数据→{error_data:5}；"
+        if flag == 1:           # 根据参数选择打印(玄学，为什么要8不能5)
+            print(string)
+            
+        return (self.read_img_time, self.BT_SET_NUM, fps, correct_data, error_data, string)
+
+
+
+
     def get_log(self, flag=1):
         "返回上一次接收图片的时间、列数、和有效字节数、无效字节数"
         correct_data = (2+self.read_y_num) * (1+1+4+1+1)
@@ -843,7 +915,8 @@ class Win_UI():
                 self.Com_OFF()
                 return                                        # 如果按钮处于关闭状态就关闭串口并退出
 
-            data = self.com.Read_img()                      # 一直读取图片，读不到不会退出
+            # data = self.com.Read_img()                      # 一直读取图片，读不到不会退出
+            data = self.com.Read_midcourt()
 
             if data == 'error':                             # 接收错误了，退出
                 self.pushButton_11_connect()                # 关闭图像接收按钮
@@ -858,7 +931,7 @@ class Win_UI():
 
             self.data_inp_img = show_img                    # 保存数据
 
-            log = self.com.get_log(0)                       # 获取刚刚读取图片时的日志
+            log = self.com.get_log_2(0)                       # 获取刚刚读取图片时的日志
             
             self.print(log[-1], 0)                          # 日志信息中的最后一个是全部信息的总和
 
