@@ -198,7 +198,8 @@ class Canon_com():
     def Read_midcourt(self):
         "读取中线，只包含中线和部分标志位的内容"
         num = 0                                                     # 接收数目
-        self.BT_SET_NUM = 41                                        # 发送数目
+        self.BT_SET_NUM = 40                                        # 发送数目
+        self.BT_SET_FH = 2                                          # 帧头数目
         rx_array = np.zeros((self.BT_SET_NUM), dtype = np.uint8)    # 接收数组
         self.img = np.zeros((32,128,3), dtype = np.uint8)           # 重置图像数组
         self.bmp = np.zeros(128, dtype = np.uint32)                 # 注意，这里为了避免错误用bmp先存起来
@@ -211,7 +212,8 @@ class Canon_com():
                 rx_array[num] = ord(ch)
             else:
                 continue
-            if num < 2 and rx_array[num] != 0xA5:               # 判断帧头
+
+            if num < self.BT_SET_FH and rx_array[num] != 0xA5:  # 判断帧头
                 num = 0
                 continue
             else:                                               # 接收数据
@@ -219,12 +221,10 @@ class Canon_com():
                 if num == self.BT_SET_NUM:                      # 接收完毕
                     
                     rx_check = 0
-                    for i in range(2,self.BT_SET_NUM-2,1):      # 计算校验位
+                    for i in range(self.BT_SET_FH,self.BT_SET_NUM-1,1):      # 计算校验位
                         rx_check += rx_array[i]
-                    #     print(f"{i}:{rx_array[i]};{rx_check};",end=" ")
-                    
-                    # print(rx_array[self.BT_SET_NUM-2],rx_check&0xF,rx_array[self.BT_SET_NUM-1])
-                    if rx_array[self.BT_SET_NUM-2] == (rx_check&0xF):    # 对比校验位
+                        
+                    if rx_array[self.BT_SET_NUM-1] == (rx_check&0xFF):    # 对比校验位
                         break
                     else:
                         num = 0
@@ -232,8 +232,8 @@ class Canon_com():
         
         self.Status_flag = rx_array[6]                          # 取出状态标志位
 
-        for i in range(7,7+32,1):
-            i_y = i-7
+        for i in range(self.BT_SET_FH+5,self.BT_SET_FH+5+32,1):
+            i_y = i-self.BT_SET_FH-5
             ch = rx_array[i]
 
             if ch & 0x80:                                       # 判断正负
