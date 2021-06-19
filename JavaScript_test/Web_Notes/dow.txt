@@ -1,0 +1,13 @@
+
+[root@VM-4-11-centos ~]# sudo /etc/init.d/bt default
+==================================================================
+BT-Panel default info!
+==================================================================
+外网面板地址: http://1.117.225.101:8888/tencentcloud
+内网面板地址: http://10.0.4.11:8888/tencentcloud
+*以下仅为初始默认账户密码，若无法登录请执行bt命令重置账户/密码登录
+username: xneb75es
+password: f04d29ecc001
+If you cannot access the panel,
+release the following panel port [8888] in the security group
+若无法访问面板，请检查防火墙/安全组是否有放行面板[8888]端口
