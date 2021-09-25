@@ -27,5 +27,21 @@ printHello_1$_();
 
 // 5. Function Return
 
+// 6. 函数还可以没名字，直接这样创建。
+let him = function(){
+    console.log("him");
+}
+him()
+
+// 8. 函数名字本身不支持传递赋值，但是变量可以。
+// him = printHello_1(); // 报错
+let add = him;
+add();
+
+// 7. 该变量还是可以赋值其他内容。
+him = 6;
+console.log(him)
+
+
 
 

@@ -1,0 +1,17 @@
+{
+  "name": "node_js",
+  "version": "1.0.0",
+  "description": "My-test-node",
+  "main": "01.js",
+  "scripts": {
+    "start": "node ./01.js",
+    "test": "jest",
+    "build": "tsc",
+    "lint": "eslint"
+  },
+  "author": "lovely-him",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

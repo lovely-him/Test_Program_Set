@@ -5,12 +5,15 @@ const three = 3     //不变常量
 
 // var全局变量的作用域
 // var hello = "Hello"
-console.log(hello)      //在定义之前就可以使用了，var的作用域是整个文件（可以把整个.js文件看作一个巨大函数）
-var hello = "Hello"     //全局变量，已经定义了但是没有赋值，所以打印undefined
-console.log(hello)      //再打印就正常了
+if (false)
+{
+    console.log(hello)      //在定义之前就可以使用了，var的作用域是整个文件（可以把整个.js文件看作一个巨大函数）
+    var hello = "Hello"     //全局变量，已经定义了但是没有赋值，所以打印undefined
+    console.log(hello)      //再打印就正常了
+}
 
 // var变量可重新赋值
-hello = 1314            //没有固定变量类型，和python类似
+hello = 1314            //没有固定变量类型，和python类似，就算定义的部分已经不会被调用，还是会被定义。表明其实全局函数的定义是在编译时就已经写好的。所以无论写在哪里定义都没关系？
 console.log(hello)      //
 
 // let局部变量的作用域1
