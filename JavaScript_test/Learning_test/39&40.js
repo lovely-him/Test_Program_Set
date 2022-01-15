@@ -7,12 +7,12 @@ if (false)
     console.log(add(1,3)); // 没有写返回值，还隐式返回了计算值    
 }
 
-if (false)
+if (true)
 {
     let add = (a, b) => a + b;
     console.log(add(1,3));
     const add_0 = add; // 可以正常的变量赋值替换
-    add = 5; // 可以看出本子还是变量，如果定义是使用可变类型，则可以改变
+    add = 5; // 可以看出本质还是变量，如果定义是使用可变类型，则可以改变
     console.log(add);
     console.log(add_0(2, 4));
 }

@@ -15,7 +15,7 @@ if (false)
     console.log(book)
 }
 
-if (false)
+if (true)
 {
     const book = [
         {title : "1984", author : "George Orwella"},
@@ -47,7 +47,7 @@ if (false)
     console.log(bookJSON)
 }
 
-if (true)
+if (false)
 {
     let data_0 = "[1,2,3]";
     let data = "{\"title\" : \"1984\", \"author\" : \"George Orwell\"}"; // 注意，JSON的字符串形式下，键和值都是要加双引号的，弄成类似字符串的形式。有一点不对都会转换失败。

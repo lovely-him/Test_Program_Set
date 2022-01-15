@@ -19,9 +19,9 @@ if (false)
     console.log(typeof book);
 }
 
- // 2. 另一种创建对象的方法，使用构造函数创建
- if (false)
- {
+// 2. 另一种创建对象的方法，使用构造函数创建
+if (true)
+{
     const book = new Object();
     console.log(book); // 一开始创建是空的
     console.log(typeof book); //类型是 object
@@ -49,12 +49,12 @@ if (false)
     
     console.log(book["checkIn"]); // 也可以使用字典的形式访问，结果一样
     console.log(book["checkIn"]());  // 就是这个括号是在方括号外面的。
- }
+}
 
  // 上下文机制： this ,并不完全是在对象内值指对象的名字，而是指代上下文使用的变量？
 
- if (true)
- {
+if (false)
+{
     const bookObj = {
         checkIn : function(){
             return this;
@@ -68,4 +68,4 @@ if (false)
     console.log(bookObj.checkIn() == bookObj); // 对的
     console.log(bookObj.checkIn() == globalThis); // 错的
     console.log(anotherCheckIn() == globalThis); // 对的
- }
+}

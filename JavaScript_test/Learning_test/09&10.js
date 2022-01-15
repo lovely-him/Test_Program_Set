@@ -4,8 +4,9 @@ let two = 2         //局部变量
 const three = 3     //不变常量
 
 // var全局变量的作用域
+hello = 1314				// 不会报错，正确调用，因为已经声明全局变量，即使声明所在行数还未运行。
 // var hello = "Hello"
-if (false)
+if (false)					// 这里已经为假，但是其中的全局变量声明依旧有效。
 {
     console.log(hello)      //在定义之前就可以使用了，var的作用域是整个文件（可以把整个.js文件看作一个巨大函数）
     var hello = "Hello"     //全局变量，已经定义了但是没有赋值，所以打印undefined
@@ -41,8 +42,11 @@ console.log(four)
 const aaron1 = "Aaron"
 console.log(aaron1)
 // const aaron1 = 10    不变常量，这样也算修改值，会直接报错
-const aaron2 = 10
-console.log(aaron2)
+if(true)
+{
+    const aaron2 = 10
+}
+// console.log(aaron2)  报错，同样准守作用域规则。看来只有var不符合常量，不准守规则~~
 
 /* 总结：
  var    关键字少用，因为let和const已经能满足绝大需求，使用var还有可能造成意料之外的错误，所以少用。

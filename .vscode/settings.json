@@ -17,5 +17,12 @@
             "priority": 4
         }
     ],
-    "python.pythonPath": "E:\\Users\\Lovely_him\\Anaconda3\\python.exe"
+    "python.pythonPath": "E:\\Users\\Lovely_him\\Anaconda3\\python.exe",
+    "python.autoComplete.extraPaths": [
+        "c:/Users/Lovely_him/.vscode/extensions/rt-thread.rt-thread-micropython-1.0.8/microExamples/code-completion"
+    ],
+    "python.linting.pylintArgs": [
+        "--init-hook",
+        "import sys; sys.path.append('c:/Users/Lovely_him/.vscode/extensions/rt-thread.rt-thread-micropython-1.0.8/microExamples/code-completion')"
+    ]
 }

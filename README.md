@@ -24,3 +24,15 @@ Test program set
 ———— Python_test                    |所有Python的学习测试程序
 ———— README.md                      |本介绍文件
 ```
+
+
+
+## VS Code 插件
+
+- vscode-icons （图标）
+- Material Icon Theme （图标）
+- Prettier - Code formatter （默认格式）
+- Pygame Snippets （扩展输入）
+
+- One Dark Pro （主题）
+- Nord （主题）

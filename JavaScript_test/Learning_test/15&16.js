@@ -10,7 +10,7 @@ const people = ["Aaron", "Mel", "John"]
 const one = 1
 const str = "Hello World"
 const b = true
-const person = {
+const person = {                //这个看起来就是个字典的样子。
     firstName: "Aaron",
     lastName: "Powell"
 }
@@ -33,5 +33,26 @@ console.log(typeof person)      //输出 object （对象）
 console.log(typeof sayHello)    //输出 function （函数）
 
 /*
-    js中另一个查看
+    js中另一个测试变量类型的方法是 instanceof
 */
+// 和上面使用的变量一样。
+console.log("-- instanceof --")
+console.log(people instanceof Array)        // 输出 true
+console.log(one instanceof Number)          // 输出 flase
+console.log(str instanceof String)          // 输出 flase
+console.log(b instanceof Boolean)           // 输出 flase
+console.log(person instanceof Object)       // 输出 true
+console.log(sayHello instanceof Function)   // 输出 true
+// 如果采用小写判断，会直接报错！！！
+// console.log(people instanceof array)
+// console.log(one instanceof number)
+
+/*
+    == js会将左右进行自适应判断，类似字符串拼接时的加号“+”。
+    0在数字中为假，‘’在字符串中为假，所以认为相等，返回true。
+
+    === js中就是普通的相等，是否一样，一样才返回true，否者为假。
+*/
+let x = 0 == '';        // 输出 true
+let y = 0 === '';       // 输出 flase
+console.log(x,y);
